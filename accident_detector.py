@@ -19,6 +19,30 @@ cooldown = False
 cooldown_start = 0
 cooldown_time = 15 * 60  # 15 minutes in seconds
 
+import socket
+import json
+from datetime import datetime
+
+def send_alert():
+    try:
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.connect(("127.0.0.1", 5050))  # Server IP and Port
+
+        alert_data = {
+            "alert": "Accident Detected",
+            "time": str(datetime.now()),
+            "location": "Camera 1",
+            "status": "Severe"
+        }
+
+        client.send(json.dumps(alert_data).encode('utf-8'))
+        client.close()
+        print("🚑 Alert Sent to Hospital via Socket")
+
+    except Exception as e:
+        print("❌ Alert Failed:", e)
+
+
 def load_model(weights):
     device = select_device('')
     model = torch.load(weights, map_location=device)  # Load weights
@@ -78,6 +102,7 @@ def accident_detection(source):
         # Cooldown logic based on consecutive frames
         if consecutive_accident_frames >= threshold and not cooldown:
             print("\n🚑 ALERT: Severe Accident Detected! Sending Alert to Hospital...\n")
+            send_alert()
             cooldown = True
             cooldown_start = time.time()
             consecutive_accident_frames = 0  # Reset consecutive counter after alert
