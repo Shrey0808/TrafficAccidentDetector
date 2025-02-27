@@ -2,13 +2,19 @@
 """Experimental modules."""
 
 import math
-
+import os
 import numpy as np
 import torch
 import torch.nn as nn
 
 from utils.downloads import attempt_download
 
+from pathlib import Path, WindowsPath
+Path = WindowsPath if os.name == 'nt' else Path
+
+import pathlib
+temp = pathlib.PosixPath
+pathlib.PosixPath = pathlib.WindowsPath
 
 class Sum(nn.Module):
     """Weighted sum of 2 or more layers https://arxiv.org/abs/1911.09070."""
@@ -95,7 +101,8 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
 
     model = Ensemble()
     for w in weights if isinstance(weights, list) else [weights]:
-        ckpt = torch.load(attempt_download(w), map_location="cpu")  # load
+        # ckpt = torch.load(attempt_download(w), map_location="cpu")  # load
+        ckpt = torch.load(str(attempt_download(w)), map_location="cpu") # Convert path to string
         ckpt = (ckpt.get("ema") or ckpt["model"]).to(device).float()  # FP32 model
 
         # Model compatibility updates
