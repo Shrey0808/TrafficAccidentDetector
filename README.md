@@ -1,6 +1,6 @@
 ---
 
-# 🚑 Traffic Accident Detection System with Emergency Alert 🚨
+# 🚑 AI Powered Traffic Accident Detection And Alert System 🚨
 
 ## Overview
 On highways and road junctions at night, major accidents can occur without anyone nearby to call for help—especially if the injured person is unable to do so. This project aims to **automatically detect road accidents** using real-time surveillance camera feeds and **notify the nearest government hospital** immediately.
